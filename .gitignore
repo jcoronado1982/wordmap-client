@@ -1,0 +1,14 @@
+
+node_modules/
+
+# Backend (Python)
+wordmap_backend/eng_sentences.tsv
+wordmap_backend/.env
+wordmap_backend/__pycache__/
+wordmap_backend/*.pyc
+wordmap_backend/semantic_map.json
+
+# Frontend (React)
+wordmap-client/node_modules/
+wordmap_backend/venv
+postgres_volume_backup.tar

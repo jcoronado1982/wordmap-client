@@ -1,0 +1,197 @@
+/* src/App.css */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #282c34;
+  color: white;
+}
+
+.App-header {
+  text-align: center;
+  padding: 20px;
+}
+
+.level-filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.level-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid var(--level-color, #9E9E9E);
+  background-color: transparent;
+  color: var(--level-color, #9E9E9E);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.level-button:hover {
+  background-color: var(--level-color, #9E9E9E);
+  color: #282c34;
+}
+
+.level-button.active {
+  background-color: var(--level-color, #9E9E9E);
+  color: #282c34;
+  box-shadow: 0 0 10px var(--level-color, #9E9E9E);
+}
+
+.form-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.form-container input {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  width: 300px;
+  background-color: #f0f0f0;
+  color: #282c34;
+}
+.form-container button[type="submit"] {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #61dafb;
+  color: #282c34;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-container input {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  width: 300px;
+  background-color: #f0f0f0;
+  color: #282c34;
+}
+
+.clear-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.map-container {
+  width: 1200px;
+  height: 800px;
+  margin: 10px auto;
+  background-color: #111111;
+  border-radius: 8px;
+  overflow: hidden; 
+  border: 1px solid #444;
+}
+
+.form-container button[type="submit"]:hover {
+  background-color: #3cb4e4;
+}
+
+.clear-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Estilos del grafo D3.js */
+
+.map-container svg g.links line {
+  stroke-opacity: 0.3 !important;
+}
+
+.map-container svg text {
+  fill: #FFFFFF !important;
+  font-size: 14px;
+  pointer-events: none; 
+  text-shadow: 0 0 3px #000, 0 0 3px #000;
+}
+
+.map-container svg text[font-weight="bold"] {
+  fill: #61dafb !important;
+  font-size: 16px;
+}
+
+.map-container svg g.node-group.searched text {
+  fill: #FF00FF !important;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 0 8px #FF00FF;
+}
+
+/* Estilos del Modal de Confirmación */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #3a3f4a;
+  padding: 24px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  color: #f0f0f0;
+}
+
+.modal-content h4 {
+  margin-top: 0;
+  color: white;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-confirm {
+  background-color: #f44336;
+  color: white;
+}
+.word-counter {
+  margin: 10px 0;
+  text-align: center;
+}
