@@ -116,7 +116,7 @@ function App() {
         
         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
           <div style={{color: 'white', fontWeight: 'bold', fontSize: '1.2rem'}}>
-            IA Semantic Universe
+            Neural Vocabulary
           </div>
           <div style={{
             background: LEVEL_COLORS[selectedLevel], 
