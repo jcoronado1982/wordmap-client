@@ -25,26 +25,27 @@ function App() {
   const [selectedLevel, setSelectedLevel] = useState('ALL');
   const [isLoading, setIsLoading] = useState(false);
   
-  // ESTADO PARA CONTROLAR LA VISIBILIDAD DE LOS BOTONES ADMIN
+  // ESTADO PARA CONTROLAR LOS BOTONES ADMIN
   const [showAdminTools, setShowAdminTools] = useState(false);
+  // ESTADO PARA CONTAR LOS CLICS SECRETOS
+  const [secretClicks, setSecretClicks] = useState(0);
 
   useEffect(() => {
-    // 1. Cargar Clusters
     fetchClusters('ALL');
-
-    // 2. VERIFICACIÓN DE ADMIN (Compatible con Vercel)
-    // Opción A: Ruta directa /test (funciona en local)
-    if (window.location.pathname === '/test') {
-      setShowAdminTools(true);
-    }
-
-    // Opción B: Parámetro URL (funciona en Vercel sin error 404)
-    // Ejemplo: https://tu-web.vercel.app/?mode=test
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('mode') === 'test') {
-      setShowAdminTools(true);
-    }
   }, []);
+
+  // --- FUNCIÓN DE ACTIVACIÓN SECRETA ---
+  const handleSecretClick = () => {
+    const newCount = secretClicks + 1;
+    setSecretClicks(newCount);
+
+    // Si llevamos 3 clics o más, activamos el modo admin
+    if (newCount >= 3) {
+      setShowAdminTools(true);
+      // Opcional: un pequeño aviso visual
+      if (newCount === 3) alert("🛠️ MODO ADMIN ACTIVADO");
+    }
+  };
 
   const fetchClusters = async (level) => {
     setIsLoading(true);
@@ -122,9 +123,21 @@ function App() {
       }}>
         
         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-          <div style={{color: 'white', fontWeight: 'bold', fontSize: '1.2rem'}}>
-            Neural Vocabulary
+          {/* --- AQUÍ ESTÁ EL TRUCO: CLIC EN EL TÍTULO --- */}
+          <div 
+            onClick={handleSecretClick}
+            style={{
+              color: 'white', 
+              fontWeight: 'bold', 
+              fontSize: '1.2rem',
+              cursor: 'pointer', // Manita para indicar que es clickeable
+              userSelect: 'none' // Evita que se seleccione el texto al hacer doble clic
+            }}
+            title="Haz clic 3 veces para opciones de admin"
+          >
+            Neural Vocabulary {secretClicks > 0 && secretClicks < 3 ? `(${secretClicks})` : ""}
           </div>
+
           <div style={{
             background: LEVEL_COLORS[selectedLevel], 
             color: '#000', padding: '2px 10px', borderRadius: '10px', fontWeight: 'bold', fontSize: '0.9rem'
@@ -161,9 +174,9 @@ function App() {
             <button type="submit" style={{cursor: 'pointer', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '4px'}}>Conectar</button>
           </form>
           
-          {/* --- SOLO SE MUESTRAN SI LA URL ES /test O ?mode=test --- */}
+          {/* --- SE MUESTRAN SI HAS HECHO 3 CLICS --- */}
           {showAdminTools && (
-            <div style={{display: 'flex', gap: '5px'}}>
+            <div style={{display: 'flex', gap: '5px', animation: 'fadeIn 0.5s'}}>
               <button 
                 onClick={handleReset} 
                 disabled={isLoading}
