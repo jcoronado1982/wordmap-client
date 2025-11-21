@@ -32,9 +32,16 @@ function App() {
     // 1. Cargar Clusters
     fetchClusters('ALL');
 
-    // 2. Verificar si estamos en la ruta secreta "/test"
-    // Esto revisa si la URL actual es http://localhost:3000/test
+    // 2. VERIFICACIÓN DE ADMIN (Compatible con Vercel)
+    // Opción A: Ruta directa /test (funciona en local)
     if (window.location.pathname === '/test') {
+      setShowAdminTools(true);
+    }
+
+    // Opción B: Parámetro URL (funciona en Vercel sin error 404)
+    // Ejemplo: https://tu-web.vercel.app/?mode=test
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'test') {
       setShowAdminTools(true);
     }
   }, []);
@@ -154,7 +161,7 @@ function App() {
             <button type="submit" style={{cursor: 'pointer', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '4px'}}>Conectar</button>
           </form>
           
-          {/* --- SOLO SE MUESTRAN SI LA URL ES /test --- */}
+          {/* --- SOLO SE MUESTRAN SI LA URL ES /test O ?mode=test --- */}
           {showAdminTools && (
             <div style={{display: 'flex', gap: '5px'}}>
               <button 
