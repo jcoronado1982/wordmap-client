@@ -1,25 +1,28 @@
 /* src/App.css */
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  /* More transparent */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  --glass-blur: blur(8px);
-  /* Slightly less blur for performance/clarity */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --accent-color: #61dafb;
-  --danger-color: #ff4d4d;
-  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Zen Mode Theme */
+  --zen-bg: #121212;
+  /* Deep charcoal */
+  --zen-surface: #1e1e1e;
+  /* Slightly lighter for controls */
+  --zen-text: #e0e0e0;
+  /* Off-white */
+  --zen-text-muted: #888888;
+  --zen-accent: #ffffff;
+  /* Pure white accent */
+  --zen-border: rgba(255, 255, 255, 0.05);
+
+  --font-zen: 'Inter', 'Helvetica Neue', sans-serif;
 }
 
 body {
-  font-family: var(--font-main);
-  background: radial-gradient(circle at 50% 50%, #1a1d23 0%, #000000 100%);
-  color: var(--text-primary);
+  font-family: var(--font-zen);
+  background: var(--zen-bg);
+  color: var(--zen-text);
   margin: 0;
   overflow: hidden;
-  /* Prevent scrollbars if not needed */
+  font-weight: 300;
+  /* Thin font */
 }
 
 .App {
@@ -28,192 +31,223 @@ body {
   height: 100vh;
 }
 
-/* --- Glass Header / Floating Bar --- */
-.app-header {
+/* --- Top Header (Minimal) --- */
+.zen-header {
   position: absolute;
-  top: 15px;
+  top: 20px;
+  left: 30px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.zen-header:hover {
+  opacity: 1;
+}
+
+.app-title {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--zen-text);
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.stat-badge {
+  font-size: 0.75rem;
+  color: var(--zen-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-badge::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--active-color, #888);
+  border-radius: 50%;
+}
+
+/* --- Bottom Controls (Floating Pill) --- */
+.zen-controls {
+  position: absolute;
+  bottom: 30px;
+  /* Slightly lower */
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   /* Reduced gap */
 
-  padding: 10px 20px;
-  /* Reduced padding */
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  /* Slightly less rounded */
-  box-shadow: var(--glass-shadow);
+  padding: 6px 18px;
+  /* Reduced padding for smaller size */
+  background: rgba(30, 30, 30, 0.4);
+  /* More transparent */
+  backdrop-filter: blur(5px);
+  /* Blur effect for readability */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 
-  width: auto;
-  max-width: 95%;
   transition: all 0.3s ease;
 }
 
-.header-top {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  width: 100%;
-  justify-content: center;
-  flex-wrap: wrap;
-  /* Allow wrapping on very small screens */
-}
-
-.app-title {
-  font-size: 1.1rem;
-  /* Smaller title */
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  cursor: pointer;
-  user-select: none;
-  background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-}
-
-.app-title:hover {
-  opacity: 0.8;
-}
-
-.stat-badge {
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  /* Smaller badge */
-  font-weight: 600;
-  color: #000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
+.zen-controls:hover {
+  transform: translateX(-50%) translateY(-2px);
+  background: rgba(30, 30, 30, 0.7);
+  /* Less transparent on hover */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* --- Level Filters --- */
 .level-filters {
   display: flex;
-  gap: 4px;
-  /* Tighter gap */
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 5px;
+  padding-right: 15px;
+  border-right: 1px solid var(--zen-border);
 }
 
 .level-btn {
   background: transparent;
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  padding: 4px 10px;
-  /* Smaller buttons */
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 500;
+  border: none;
+  color: var(--zen-text-muted);
+  padding: 5px 10px;
+  font-family: var(--font-zen);
   font-size: 0.8rem;
-  transition: all 0.2s ease;
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.2s;
 }
 
 .level-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  transform: translateY(-1px);
+  color: var(--zen-text);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .level-btn.active {
-  background: var(--active-color);
-  color: #000;
-  border-color: transparent;
-  box-shadow: 0 0 10px var(--active-color-glow);
-  font-weight: 700;
+  color: var(--zen-bg);
+  background: var(--zen-text);
+  /* Inverted for active */
+  font-weight: 500;
 }
 
-/* --- Controls Section --- */
+/* --- Inputs & Actions --- */
 .controls-row {
   display: flex;
-  gap: 8px;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  /* Ensure it takes full width to center items properly */
+  gap: 10px;
 }
 
 .glass-input {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--glass-border);
-  color: white;
-  padding: 6px 12px;
-  /* Compact input */
-  border-radius: 8px;
-  font-size: 0.85rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--zen-border);
+  color: var(--zen-text);
+  padding: 5px 0;
+  font-family: var(--font-zen);
+  font-size: 0.9rem;
   outline: none;
-  transition: all 0.2s;
-  min-width: 120px;
-  /* Smaller min-width */
   width: 180px;
-  flex: 1;
-  /* Allow growing */
-  max-width: 200px;
+  transition: border-color 0.2s;
 }
 
 .glass-input:focus {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.2);
+  border-bottom-color: var(--zen-text);
+}
+
+.glass-input::placeholder {
+  color: var(--zen-text-muted);
+  font-weight: 300;
 }
 
 .action-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid var(--glass-border);
-  padding: 6px 12px;
-  /* Compact button */
-  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--zen-border);
+  color: var(--zen-text);
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-family: var(--font-zen);
+  font-size: 0.8rem;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
   transition: all 0.2s;
-  white-space: nowrap;
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  border-color: var(--zen-text);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .admin-tools {
   display: flex;
   gap: 8px;
-  animation: fadeIn 0.5s ease;
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid var(--zen-border);
 }
 
 .btn-reset {
-  background: rgba(233, 30, 99, 0.2);
-  border: 1px solid rgba(233, 30, 99, 0.5);
   color: #ff80ab;
+  border-color: rgba(255, 128, 171, 0.3);
 }
 
 .btn-reset:hover {
-  background: rgba(233, 30, 99, 0.4);
+  background: rgba(255, 128, 171, 0.1);
 }
 
 .btn-clear {
-  background: rgba(255, 0, 0, 0.1);
-  border: 1px solid rgba(255, 0, 0, 0.4);
   color: #ff8a80;
+  border-color: rgba(255, 138, 128, 0.3);
 }
 
 .btn-clear:hover {
-  background: rgba(255, 0, 0, 0.3);
+  background: rgba(255, 138, 128, 0.1);
 }
 
-/* --- Canvas Container --- */
+/* --- Language Toggle (Minimalist) --- */
+.lang-toggle {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-zen);
+  font-size: 0.8rem;
+  color: var(--zen-text-muted);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.lang-toggle:hover {
+  opacity: 1;
+}
+
+.lang-option.active {
+  color: var(--zen-text);
+  font-weight: 500;
+  border-bottom: 1px solid var(--zen-text);
+}
+
+.lang-separator {
+  opacity: 0.3;
+}
+
+/* --- Canvas --- */
 .canvas-container {
   position: absolute;
   top: 0;
@@ -221,143 +255,31 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
-  /* Behind header */
 }
 
-/* --- Animations --- */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* --- D3 / Graph Styles (Preserved but cleaned) --- */
-.map-container svg text {
-  fill: #FFFFFF !important;
-  font-family: var(--font-main);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-/* --- Mobile Responsiveness --- */
+/* --- Mobile --- */
 @media (max-width: 768px) {
-  .app-header {
-    top: 10px;
-    padding: 8px 12px;
+  .zen-controls {
     width: 90%;
-    gap: 6px;
-  }
-
-  .header-top {
-    gap: 10px;
-    justify-content: space-between;
-  }
-
-  .app-title {
-    font-size: 1rem;
-  }
-
-  .stat-badge {
-    font-size: 0.7rem;
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 15px;
+    gap: 15px;
+    bottom: 20px;
   }
 
   .level-filters {
-    gap: 3px;
-  }
-
-  .level-btn {
-    padding: 3px 8px;
-    font-size: 0.75rem;
+    border-right: none;
+    border-bottom: 1px solid var(--zen-border);
+    padding-right: 0;
+    padding-bottom: 10px;
+    width: 100%;
+    justify-content: center;
   }
 
   .controls-row {
-    gap: 6px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-
-  .glass-input {
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    min-width: 100px;
-  }
-
-  .action-btn {
-    padding: 5px 10px;
-    font-size: 0.8rem;
-  }
-
-  /* Stack inputs on very small screens if needed */
-  @media (max-width: 480px) {
-    .controls-row {
-      justify-content: stretch;
-    }
-
-    .glass-input {
-      width: 100%;
-      max-width: none;
-    }
-
-    form {
-      width: 100%;
-      display: flex;
-    }
-  }
-}
-
-/* --- Language Toggle --- */
-.lang-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 200;
-  /* Above header */
-
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 4px 8px;
-  gap: 8px;
-  font-family: 'Roboto Mono', monospace;
-  font-size: 0.85rem;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s;
-}
-
-.lang-toggle:hover {
-  border-color: #555;
-}
-
-.lang-option {
-  color: #666;
-  font-weight: 500;
-  transition: color 0.2s;
-  position: relative;
-}
-
-.lang-option.active {
-  color: #ff9800;
-  /* Orange accent */
-  font-weight: 700;
-}
-
-.lang-option.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #ff9800;
-  border-radius: 2px;
-}
-
-.lang-separator {
-  color: #444;
 }

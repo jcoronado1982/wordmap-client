@@ -165,36 +165,30 @@ function App() {
 
   return (
     <div className="App">
-      {/* --- LANGUAGE TOGGLE (Corner) --- */}
+      {/* --- LANGUAGE TOGGLE (Minimalist Corner) --- */}
       <div className="lang-toggle" onClick={toggleLang} title="Switch Language">
         <span className={`lang-option ${lang === 'es' ? 'active' : ''}`}>ES</span>
         <span className="lang-separator">/</span>
         <span className={`lang-option ${lang === 'en' ? 'active' : ''}`}>EN</span>
       </div>
 
-      <header className="app-header">
-
-        <div className="header-top">
-
-          <div
-            onClick={handleSecretClick}
-            className="app-title"
-            title="Haz clic 3 veces para opciones de admin"
-          >
-            {t.title} {secretClicks > 0 && secretClicks < 3 ? `(${secretClicks})` : ""}
-          </div>
-
-          <div
-            className="stat-badge"
-            style={{
-              background: LEVEL_COLORS[selectedLevel],
-              boxShadow: `0 0 10px ${LEVEL_COLORS[selectedLevel]}`
-            }}
-          >
-            {isLoading ? t.loading : `${totalVisibleWords} ${t.words} (${selectedLevel})`}
-          </div>
+      {/* --- ZEN HEADER (Top Left) --- */}
+      <div className="zen-header">
+        <div
+          onClick={handleSecretClick}
+          className="app-title"
+          title="Haz clic 3 veces para opciones de admin"
+        >
+          {t.title} {secretClicks > 0 && secretClicks < 3 ? `(${secretClicks})` : ""}
         </div>
 
+        <div className="stat-badge">
+          {isLoading ? t.loading : `${totalVisibleWords} ${t.words} (${selectedLevel})`}
+        </div>
+      </div>
+
+      {/* --- ZEN CONTROLS (Bottom Floating Pill) --- */}
+      <div className="zen-controls">
         <div className="level-filters">
           {LEVELS.map(lvl => (
             <button
@@ -202,10 +196,6 @@ function App() {
               onClick={() => handleLevelChange(lvl)}
               disabled={isLoading}
               className={`level-btn ${selectedLevel === lvl ? 'active' : ''}`}
-              style={selectedLevel === lvl ? {
-                '--active-color': LEVEL_COLORS[lvl],
-                '--active-color-glow': LEVEL_COLORS[lvl]
-              } : {}}
             >
               {lvl}
             </button>
@@ -213,8 +203,7 @@ function App() {
         </div>
 
         <div className="controls-row">
-
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '8px' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px' }}>
             <input
               type="text"
               value={phrase}
@@ -225,7 +214,6 @@ function App() {
             <button type="submit" className="action-btn">{t.connectBtn}</button>
           </form>
 
-          {/* --- SE MUESTRAN SI HAS HECHO 3 CLICS --- */}
           {showAdminTools && (
             <div className="admin-tools">
               <button
@@ -253,15 +241,15 @@ function App() {
             className="glass-input"
           />
         </div>
-      </header>
+      </div>
 
       <div className="canvas-container">
         <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 800], fov: 60, far: 10000 }}>
-          <color attach="background" args={['#000000']} />
-          <fog attach="fog" args={['#000000', 500, 2000]} />
+          <color attach="background" args={['#121212']} /> {/* Zen Background */}
+          <fog attach="fog" args={['#121212', 500, 2000]} />
           <ambientLight intensity={0.8} />
           <pointLight position={[100, 100, 100]} intensity={1} />
-          <Stars radius={300} depth={100} count={6000} factor={4} saturation={0} fade speed={1} />
+          <Stars radius={300} depth={100} count={4000} factor={4} saturation={0} fade speed={0.5} />
           <OrbitControls enableDamping dampingFactor={0.05} minDistance={10} maxDistance={5000} />
           <WordCloud3D searchTerm={searchTerm} clusterMap={clusterData} />
         </Canvas>
