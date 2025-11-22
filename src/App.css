@@ -1,197 +1,363 @@
 /* src/App.css */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  /* More transparent */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glass-blur: blur(8px);
+  /* Slightly less blur for performance/clarity */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-color: #61dafb;
+  --danger-color: #ff4d4d;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #282c34;
-  color: white;
+  font-family: var(--font-main);
+  background: radial-gradient(circle at 50% 50%, #1a1d23 0%, #000000 100%);
+  color: var(--text-primary);
+  margin: 0;
+  overflow: hidden;
+  /* Prevent scrollbars if not needed */
 }
 
-.App-header {
-  text-align: center;
-  padding: 20px;
+.App {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
 }
 
+/* --- Glass Header / Floating Bar --- */
+.app-header {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  /* Reduced gap */
+
+  padding: 10px 20px;
+  /* Reduced padding */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  /* Slightly less rounded */
+  box-shadow: var(--glass-shadow);
+
+  width: auto;
+  max-width: 95%;
+  transition: all 0.3s ease;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* Allow wrapping on very small screens */
+}
+
+.app-title {
+  font-size: 1.1rem;
+  /* Smaller title */
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  user-select: none;
+  background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.app-title:hover {
+  opacity: 0.8;
+}
+
+.stat-badge {
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  /* Smaller badge */
+  font-weight: 600;
+  color: #000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+/* --- Level Filters --- */
 .level-filters {
   display: flex;
+  gap: 4px;
+  /* Tighter gap */
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
 }
 
-.level-button {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  border: 2px solid var(--level-color, #9E9E9E);
-  background-color: transparent;
-  color: var(--level-color, #9E9E9E);
-  border-radius: 20px;
+.level-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  /* Smaller buttons */
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 500;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
 }
 
-.level-button:hover {
-  background-color: var(--level-color, #9E9E9E);
-  color: #282c34;
-}
-
-.level-button.active {
-  background-color: var(--level-color, #9E9E9E);
-  color: #282c34;
-  box-shadow: 0 0 10px var(--level-color, #9E9E9E);
-}
-
-.form-container {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.form-container input {
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  width: 300px;
-  background-color: #f0f0f0;
-  color: #282c34;
-}
-.form-container button[type="submit"] {
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #61dafb;
-  color: #282c34;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.search-container {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.search-container input {
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  width: 300px;
-  background-color: #f0f0f0;
-  color: #282c34;
-}
-
-.clear-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #f44336;
+.level-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+  transform: translateY(-1px);
 }
 
-.map-container {
-  width: 1200px;
-  height: 800px;
-  margin: 10px auto;
-  background-color: #111111;
+.level-btn.active {
+  background: var(--active-color);
+  color: #000;
+  border-color: transparent;
+  box-shadow: 0 0 10px var(--active-color-glow);
+  font-weight: 700;
+}
+
+/* --- Controls Section --- */
+.controls-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  /* Ensure it takes full width to center items properly */
+}
+
+.glass-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 6px 12px;
+  /* Compact input */
   border-radius: 8px;
-  overflow: hidden; 
-  border: 1px solid #444;
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.2s;
+  min-width: 120px;
+  /* Smaller min-width */
+  width: 180px;
+  flex: 1;
+  /* Allow growing */
+  max-width: 200px;
 }
 
-.form-container button[type="submit"]:hover {
-  background-color: #3cb4e4;
+.glass-input:focus {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.2);
 }
 
-.clear-button:hover {
-  background-color: #d32f2f;
+.action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid var(--glass-border);
+  padding: 6px 12px;
+  /* Compact button */
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
-/* Estilos del grafo D3.js */
-
-.map-container svg g.links line {
-  stroke-opacity: 0.3 !important;
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
-.map-container svg text {
-  fill: #FFFFFF !important;
-  font-size: 14px;
-  pointer-events: none; 
-  text-shadow: 0 0 3px #000, 0 0 3px #000;
+.admin-tools {
+  display: flex;
+  gap: 8px;
+  animation: fadeIn 0.5s ease;
 }
 
-.map-container svg text[font-weight="bold"] {
-  fill: #61dafb !important;
-  font-size: 16px;
+.btn-reset {
+  background: rgba(233, 30, 99, 0.2);
+  border: 1px solid rgba(233, 30, 99, 0.5);
+  color: #ff80ab;
 }
 
-.map-container svg g.node-group.searched text {
-  fill: #FF00FF !important;
-  font-weight: bold;
-  font-size: 18px;
-  text-shadow: 0 0 8px #FF00FF;
+.btn-reset:hover {
+  background: rgba(233, 30, 99, 0.4);
 }
 
-/* Estilos del Modal de Confirmación */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
+.btn-clear {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #ff8a80;
+}
+
+.btn-clear:hover {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+/* --- Canvas Container --- */
+.canvas-container {
+  position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  justify-content: center;
-  align-items: center;
+  z-index: 0;
+  /* Behind header */
 }
 
-.modal-content {
-  background-color: #3a3f4a;
-  padding: 24px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-  color: #f0f0f0;
+/* --- Animations --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.modal-content h4 {
-  margin-top: 0;
-  color: white;
+/* --- D3 / Graph Styles (Preserved but cleaned) --- */
+.map-container svg text {
+  fill: #FFFFFF !important;
+  font-family: var(--font-main);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.modal-buttons {
-  margin-top: 20px;
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .app-header {
+    top: 10px;
+    padding: 8px 12px;
+    width: 90%;
+    gap: 6px;
+  }
+
+  .header-top {
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .app-title {
+    font-size: 1rem;
+  }
+
+  .stat-badge {
+    font-size: 0.7rem;
+  }
+
+  .level-filters {
+    gap: 3px;
+  }
+
+  .level-btn {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+  }
+
+  .controls-row {
+    gap: 6px;
+  }
+
+  .glass-input {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    min-width: 100px;
+  }
+
+  .action-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Stack inputs on very small screens if needed */
+  @media (max-width: 480px) {
+    .controls-row {
+      justify-content: stretch;
+    }
+
+    .glass-input {
+      width: 100%;
+      max-width: none;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+    }
+  }
+}
+
+/* --- Language Toggle --- */
+.lang-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+  /* Above header */
+
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.modal-buttons button {
-  padding: 10px 15px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: none;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 4px 8px;
+  gap: 8px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
   cursor: pointer;
-  font-weight: bold;
+  user-select: none;
+  transition: all 0.2s;
 }
 
-.modal-cancel {
-  background-color: #6c757d;
-  color: white;
+.lang-toggle:hover {
+  border-color: #555;
 }
 
-.modal-confirm {
-  background-color: #f44336;
-  color: white;
+.lang-option {
+  color: #666;
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
 }
-.word-counter {
-  margin: 10px 0;
-  text-align: center;
+
+.lang-option.active {
+  color: #ff9800;
+  /* Orange accent */
+  font-weight: 700;
+}
+
+.lang-option.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ff9800;
+  border-radius: 2px;
+}
+
+.lang-separator {
+  color: #444;
 }

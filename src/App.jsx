@@ -1,30 +1,75 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stars, OrbitControls } from '@react-three/drei'; 
+import { Stars, OrbitControls } from '@react-three/drei';
 import WordCloud3D from './components/WordCloud3D';
-import './App.css'; 
+import './App.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2", "ALL"];
 
+// Colors now handled in CSS mostly, but kept for 3D elements if needed
 const LEVEL_COLORS = {
-  "A1": "#61dafb", 
-  "A2": "#4CAF50", 
-  "B1": "#FFC107", 
-  "B2": "#FF5722", 
-  "C1": "#E91E63", 
-  "C2": "#9C27B0", 
-  "ALL": "#ffffff" 
+  "A1": "#61dafb",
+  "A2": "#4CAF50",
+  "B1": "#FFC107",
+  "B2": "#FF5722",
+  "C1": "#E91E63",
+  "C2": "#9C27B0",
+  "ALL": "#ffffff"
+};
+
+// --- TRANSLATIONS DICTIONARY ---
+const TRANSLATIONS = {
+  es: {
+    title: "Neural Vocabulary",
+    loading: "Cargando...",
+    words: "palabras",
+    connectPlaceholder: "Conectar frase...",
+    connectBtn: "Conectar",
+    searchPlaceholder: "🔍 Buscar...",
+    resetBtn: "☠️ RESET",
+    clearBtn: "🗑️ VACIAR",
+    resetConfirm: "⚠️ ¿RESTAURAR DE FÁBRICA?\nEsto borrará tus cambios y cargará la IA original.",
+    resetSuccess: "¡Universo restaurado!",
+    clearConfirm: "🗑️ ¿VACIAR TODO?\nSe borrarán todas las palabras.",
+    clearSuccess: "Universo vacío.",
+    adminActivated: "🛠️ MODO ADMIN ACTIVADO",
+    processed: "Frase procesada"
+  },
+  en: {
+    title: "Neural Vocabulary",
+    loading: "Loading...",
+    words: "words",
+    connectPlaceholder: "Connect phrase...",
+    connectBtn: "Connect",
+    searchPlaceholder: "🔍 Search...",
+    resetBtn: "☠️ RESET",
+    clearBtn: "🗑️ CLEAR",
+    resetConfirm: "⚠️ FACTORY RESET?\nThis will delete your changes and load the original AI.",
+    resetSuccess: "Universe restored!",
+    clearConfirm: "🗑️ CLEAR ALL?\nAll words will be deleted.",
+    clearSuccess: "Universe cleared.",
+    adminActivated: "🛠️ ADMIN MODE ACTIVATED",
+    processed: "Phrase processed"
+  }
 };
 
 function App() {
+  // --- LANGUAGE STATE (Auto-detect) ---
+  const [lang, setLang] = useState(() => {
+    const browserLang = navigator.language || navigator.userLanguage;
+    return browserLang.startsWith('es') ? 'es' : 'en';
+  });
+
+  const t = TRANSLATIONS[lang]; // Helper for current language
+
   const [phrase, setPhrase] = useState('');
-  const [searchTerm, setSearchTerm] = useState(''); 
-  const [clusterData, setClusterData] = useState([]); 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [clusterData, setClusterData] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState('ALL');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // ESTADO PARA CONTROLAR LOS BOTONES ADMIN
   const [showAdminTools, setShowAdminTools] = useState(false);
   // ESTADO PARA CONTAR LOS CLICS SECRETOS
@@ -33,6 +78,10 @@ function App() {
   useEffect(() => {
     fetchClusters('ALL');
   }, []);
+
+  const toggleLang = () => {
+    setLang(prev => prev === 'es' ? 'en' : 'es');
+  };
 
   // --- FUNCIÓN DE ACTIVACIÓN SECRETA ---
   const handleSecretClick = () => {
@@ -43,7 +92,7 @@ function App() {
     if (newCount >= 3) {
       setShowAdminTools(true);
       // Opcional: un pequeño aviso visual
-      if (newCount === 3) alert("🛠️ MODO ADMIN ACTIVADO");
+      if (newCount === 3) alert(t.adminActivated);
     }
   };
 
@@ -53,7 +102,7 @@ function App() {
       const response = await fetch(`${API_BASE_URL}/api/get_semantic_map?level=${level}`);
       if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
       const data = await response.json();
-      setClusterData(Array.isArray(data.clusterMap) ? data.clusterMap : []); 
+      setClusterData(Array.isArray(data.clusterMap) ? data.clusterMap : []);
     } catch (error) {
       console.error('❌ Error API:', error);
     } finally {
@@ -80,141 +129,140 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: phrase.trim() }),
       });
-      setPhrase(''); 
-      console.log("Frase procesada");
-      await fetchClusters(selectedLevel); 
+      setPhrase('');
+      console.log(t.processed);
+      await fetchClusters(selectedLevel);
     } catch (error) { console.error(error); }
   };
 
   const handleReset = async () => {
-    const confirm = window.confirm("⚠️ ¿RESTAURAR DE FÁBRICA?\nEsto borrará tus cambios y cargará la IA original.");
+    const confirm = window.confirm(t.resetConfirm);
     if (!confirm) return;
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/reset_db`, { method: 'POST' });
       if (response.ok) {
-        alert("¡Universo restaurado!");
-        window.location.reload(); 
+        alert(t.resetSuccess);
+        window.location.reload();
       }
-    } catch (error) { console.error(error); } 
+    } catch (error) { console.error(error); }
     finally { setIsLoading(false); }
   };
 
   const handleClear = async () => {
-    const confirm = window.confirm("🗑️ ¿VACIAR TODO?\nSe borrarán todas las palabras.");
+    const confirm = window.confirm(t.clearConfirm);
     if (!confirm) return;
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/clear_db`, { method: 'POST' });
       if (response.ok) {
-        setClusterData([]); 
-        alert("Universo vacío.");
+        setClusterData([]);
+        alert(t.clearSuccess);
       }
-    } catch (error) { console.error(error); } 
+    } catch (error) { console.error(error); }
     finally { setIsLoading(false); }
   };
 
   return (
     <div className="App">
-      <header className="App-header" style={{ 
-        padding: '15px', background: 'rgba(10,10,10,0.9)', backdropFilter: 'blur(10px)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', 
-        zIndex: 10, position: 'relative', borderBottom: '1px solid #333' 
-      }}>
-        
-        <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-          {/* --- AQUÍ ESTÁ EL TRUCO: CLIC EN EL TÍTULO --- */}
-          <div 
+      {/* --- LANGUAGE TOGGLE (Corner) --- */}
+      <div className="lang-toggle" onClick={toggleLang} title="Switch Language">
+        <span className={`lang-option ${lang === 'es' ? 'active' : ''}`}>ES</span>
+        <span className="lang-separator">/</span>
+        <span className={`lang-option ${lang === 'en' ? 'active' : ''}`}>EN</span>
+      </div>
+
+      <header className="app-header">
+
+        <div className="header-top">
+
+          <div
             onClick={handleSecretClick}
-            style={{
-              color: 'white', 
-              fontWeight: 'bold', 
-              fontSize: '1.2rem',
-              cursor: 'pointer', // Manita para indicar que es clickeable
-              userSelect: 'none' // Evita que se seleccione el texto al hacer doble clic
-            }}
+            className="app-title"
             title="Haz clic 3 veces para opciones de admin"
           >
-            Neural Vocabulary {secretClicks > 0 && secretClicks < 3 ? `(${secretClicks})` : ""}
+            {t.title} {secretClicks > 0 && secretClicks < 3 ? `(${secretClicks})` : ""}
           </div>
 
-          <div style={{
-            background: LEVEL_COLORS[selectedLevel], 
-            color: '#000', padding: '2px 10px', borderRadius: '10px', fontWeight: 'bold', fontSize: '0.9rem'
-          }}>
-            {isLoading ? "Cargando..." : `${totalVisibleWords} palabras (${selectedLevel})`}
+          <div
+            className="stat-badge"
+            style={{
+              background: LEVEL_COLORS[selectedLevel],
+              boxShadow: `0 0 10px ${LEVEL_COLORS[selectedLevel]}`
+            }}
+          >
+            {isLoading ? t.loading : `${totalVisibleWords} ${t.words} (${selectedLevel})`}
           </div>
         </div>
 
-        <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: 'center'}}>
+        <div className="level-filters">
           {LEVELS.map(lvl => (
             <button
               key={lvl}
               onClick={() => handleLevelChange(lvl)}
               disabled={isLoading}
-              style={{
-                background: selectedLevel === lvl ? LEVEL_COLORS[lvl] : 'transparent',
-                color: selectedLevel === lvl ? '#000' : LEVEL_COLORS[lvl],
-                border: `1px solid ${LEVEL_COLORS[lvl]}`,
-                padding: '5px 12px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold',
-                opacity: isLoading ? 0.5 : 1,
-                transition: 'all 0.2s',
-                fontSize: '0.85rem'
-              }}
+              className={`level-btn ${selectedLevel === lvl ? 'active' : ''}`}
+              style={selectedLevel === lvl ? {
+                '--active-color': LEVEL_COLORS[lvl],
+                '--active-color-glow': LEVEL_COLORS[lvl]
+              } : {}}
             >
               {lvl}
             </button>
           ))}
         </div>
-        
-        <div style={{display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center'}}>
-          
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '5px' }}>
-            <input type="text" value={phrase} onChange={(e) => setPhrase(e.target.value)} placeholder="Conectar frase..." style={{ padding: '8px', borderRadius: '4px', border: 'none' }} />
-            <button type="submit" style={{cursor: 'pointer', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '4px'}}>Conectar</button>
+
+        <div className="controls-row">
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              value={phrase}
+              onChange={(e) => setPhrase(e.target.value)}
+              placeholder={t.connectPlaceholder}
+              className="glass-input"
+            />
+            <button type="submit" className="action-btn">{t.connectBtn}</button>
           </form>
-          
+
           {/* --- SE MUESTRAN SI HAS HECHO 3 CLICS --- */}
           {showAdminTools && (
-            <div style={{display: 'flex', gap: '5px', animation: 'fadeIn 0.5s'}}>
-              <button 
-                onClick={handleReset} 
+            <div className="admin-tools">
+              <button
+                onClick={handleReset}
                 disabled={isLoading}
-                style={{
-                  background: '#E91E63', color: 'white', border: 'none', borderRadius: '4px', 
-                  cursor: 'pointer', fontWeight: 'bold', padding: '0 10px', height: '33px'
-                }}
-                title="Restaurar IA original"
+                className="action-btn btn-reset"
               >
-                ☠️ RESET
+                {t.resetBtn}
               </button>
 
-              <button 
-                onClick={handleClear} 
+              <button
+                onClick={handleClear}
                 disabled={isLoading}
-                style={{
-                  background: '#000', color: '#ff4d4d', border: '1px solid #ff4d4d', borderRadius: '4px', 
-                  cursor: 'pointer', fontWeight: 'bold', padding: '0 10px', height: '33px'
-                }}
-                title="Vaciar DB"
+                className="action-btn btn-clear"
               >
-                🗑️ VACIAR
+                {t.clearBtn}
               </button>
             </div>
           )}
 
-          <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="🔍 Buscar..." style={{ padding: '8px', borderRadius: '4px', border: 'none' }} />
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t.searchPlaceholder}
+            className="glass-input"
+          />
         </div>
       </header>
 
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100vh', background: '#000' }}>
+      <div className="canvas-container">
         <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 800], fov: 60, far: 10000 }}>
           <color attach="background" args={['#000000']} />
           <fog attach="fog" args={['#000000', 500, 2000]} />
           <ambientLight intensity={0.8} />
           <pointLight position={[100, 100, 100]} intensity={1} />
           <Stars radius={300} depth={100} count={6000} factor={4} saturation={0} fade speed={1} />
-          <OrbitControls enableDamping dampingFactor={0.05} minDistance={10} maxDistance={5000} /> 
+          <OrbitControls enableDamping dampingFactor={0.05} minDistance={10} maxDistance={5000} />
           <WordCloud3D searchTerm={searchTerm} clusterMap={clusterData} />
         </Canvas>
       </div>
